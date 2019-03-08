@@ -1,14 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using RedisHelper.Enum;
+using CacheHelper.Enum;
 
-namespace RedisHelper.Interface
+namespace CacheHelper.Interface
 {
     public interface ICacheService
     {
         bool Exists(string key);
 
-        void Add(string key, object value, RedisExpired expired);
+        void Add(string key, object value, CacheExpired expired);
 
         void Remove(string key);
 
@@ -24,12 +24,10 @@ namespace RedisHelper.Interface
 
         Task<bool> ExistsAsync(string key);
 
-        Task AddAsync(string key, object value, RedisExpired expired);
+        Task AddAsync(string key, object value, CacheExpired expired);
 
         Task RemoveAsync(string key);
 
         Task RemoveAsync(IEnumerable<string> keys);
-
-
     }
 }

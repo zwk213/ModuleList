@@ -10,7 +10,7 @@
     <ProjectReference Include="..\EFHelper\EFHelper.csproj" />
     <ProjectReference Include="..\FileHelper\FileHelper.csproj" />
     <ProjectReference Include="..\JwtService\JwtService.csproj" />
-    <ProjectReference Include="..\RedisHelper\RedisHelper.csproj" />
+    <ProjectReference Include="..\RedisHelper\CacheHelper.csproj" />
     <ProjectReference Include="..\WebHelper\WebHelper.csproj" />
   </ItemGroup>
 

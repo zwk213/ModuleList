@@ -9,7 +9,7 @@ namespace EFHelper.Interface.Item
 {
     public interface ISelect<T> where T : BaseModel
     {
-        #region 获取其它
+        #region 获取计数与存在
 
         int Count(Expression<Func<T, bool>> where);
         Task<int> CountAsync(Expression<Func<T, bool>> where);
@@ -28,9 +28,6 @@ namespace EFHelper.Interface.Item
 
         #region 获取部分
 
-        List<T> SelectAny(Expression<Func<T, bool>> where, string orderby, params Expression<Func<T, object>>[] properties);
-        Task<List<T>> SelectAnyAsync(Expression<Func<T, bool>> where, string orderby, params Expression<Func<T, object>>[] properties);
-
         List<T> SelectAny(Expression<Func<T, bool>> where, string orderby, int size, params Expression<Func<T, object>>[] properties);
         Task<List<T>> SelectAnyAsync(Expression<Func<T, bool>> where, string orderby, int size, params Expression<Func<T, object>>[] properties);
 
@@ -46,15 +43,6 @@ namespace EFHelper.Interface.Item
         Task<List<TR>> GetColumnsAsync<TR>(Expression<Func<T, bool>> where, Expression<Func<T, TR>> select, string orderby, int page, int size);
 
         #endregion
-
-
-
-
-
-
-
-
-
 
     }
 }

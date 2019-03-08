@@ -2,7 +2,12 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
-    <Version>1.0.1</Version>
+    <Version>1.1.1</Version>
+    <Description>添加缓存</Description>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <OutputPath></OutputPath>
   </PropertyGroup>
 
   <ItemGroup>
@@ -12,6 +17,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CoreHelper\CoreHelper.csproj" />
+    <ProjectReference Include="..\RedisHelper\CacheHelper.csproj" />
   </ItemGroup>
 
 </Project>

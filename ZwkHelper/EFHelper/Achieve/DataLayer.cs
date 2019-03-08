@@ -140,18 +140,6 @@ namespace EFHelper.Achieve
 
         #region 获取多个
 
-        public List<T> SelectAny(Expression<Func<T, bool>> where, string orderby,
-            params Expression<Func<T, object>>[] properties)
-        {
-            return Filter(where, properties).SortBy(orderby).ToList();
-        }
-
-        public async Task<List<T>> SelectAnyAsync(Expression<Func<T, bool>> where, string orderby,
-            params Expression<Func<T, object>>[] properties)
-        {
-            return await Task.Run(() => SelectAny(where, orderby, properties));
-        }
-
         public List<T> SelectAny(Expression<Func<T, bool>> where, string orderby, int size,
             params Expression<Func<T, object>>[] properties)
         {

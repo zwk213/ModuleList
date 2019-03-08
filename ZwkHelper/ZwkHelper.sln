@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28307.106
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZwkHelper", "ZwkHelper\ZwkHelper.csproj", "{03673A8D-2C3B-49C5-B9D1-968BD61DDF15}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ZwkHelper", "ZwkHelper\ZwkHelper.csproj", "{03673A8D-2C3B-49C5-B9D1-968BD61DDF15}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "辅助工具", "辅助工具", "{386102F4-F4FC-4012-943D-0D854F0B1461}"
 EndProject
@@ -15,11 +15,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EFHelper", "EFHelper\EFHelp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileHelper", "FileHelper\FileHelper.csproj", "{C6233F4C-0A9B-4F65-96EE-A302FA55ABFA}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RedisHelper", "RedisHelper\RedisHelper.csproj", "{97E24EC3-E3C8-440E-A2DA-F18613D89F36}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CacheHelper", "RedisHelper\CacheHelper.csproj", "{97E24EC3-E3C8-440E-A2DA-F18613D89F36}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JwtService", "JwtService\JwtService.csproj", "{2F016A62-F59D-4082-83F0-EC246CB5AFD7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebHelper", "WebHelper\WebHelper.csproj", "{5E6776F1-4BA6-4FC0-B1DB-DE9F2F484D72}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebHelper", "WebHelper\WebHelper.csproj", "{5E6776F1-4BA6-4FC0-B1DB-DE9F2F484D72}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

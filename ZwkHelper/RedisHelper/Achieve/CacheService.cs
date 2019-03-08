@@ -1,17 +1,17 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using CacheHelper.Enum;
+using CacheHelper.Interface;
 using CoreHelper;
 using Microsoft.Extensions.Caching.Distributed;
-using RedisHelper.Enum;
-using RedisHelper.Interface;
 
-namespace RedisHelper.Achieve
+namespace CacheHelper.Achieve
 {
-    public class RedisService : ICacheService
+    public class CacheService : ICacheService
     {
         private readonly IDistributedCache _cache;
 
-        public RedisService(IDistributedCache cache)
+        public CacheService(IDistributedCache cache)
         {
             _cache = cache;
         }
@@ -31,7 +31,7 @@ namespace RedisHelper.Achieve
             return !string.IsNullOrEmpty(_cache.GetString(key));
         }
 
-        public void Add(string key, object value, RedisExpired expired)
+        public void Add(string key, object value, CacheExpired expired)
         {
             if (Exists(key))
                 return;
@@ -66,7 +66,7 @@ namespace RedisHelper.Achieve
             return await Task.Run(() => Exists(key));
         }
 
-        public async Task AddAsync(string key, object value, RedisExpired expired)
+        public async Task AddAsync(string key, object value, CacheExpired expired)
         {
             await Task.Run(() => Add(key, value, expired));
         }

@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace RedisHelper.Enum
+namespace CacheHelper.Enum
 {
-    public enum RedisExpired
+    public enum CacheExpired
     {
         /// <summary>
         /// 分钟
@@ -32,21 +32,21 @@ namespace RedisHelper.Enum
 
     public static class RedisExtend
     {
-        public static TimeSpan ToTimeSpan(this RedisExpired expired)
+        public static TimeSpan ToTimeSpan(this CacheExpired expired)
         {
             switch (expired)
             {
-                case RedisExpired.Minite:
+                case CacheExpired.Minite:
                     return new TimeSpan(0, 1, 0);
-                case RedisExpired.FiveMinite:
+                case CacheExpired.FiveMinite:
                     return new TimeSpan(0, 5, 0);
-                case RedisExpired.Quarter:
+                case CacheExpired.Quarter:
                     return new TimeSpan(0, 15, 0);
-                case RedisExpired.Hour:
+                case CacheExpired.Hour:
                     return new TimeSpan(1, 0, 0);
-                case RedisExpired.Day:
+                case CacheExpired.Day:
                     return new TimeSpan(1, 0, 0, 0);
-                case RedisExpired.Week:
+                case CacheExpired.Week:
                     return new TimeSpan(1, 0, 0, 0).Multiply(7);
                 default:
                     return new TimeSpan();
