@@ -4,93 +4,9 @@ using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 
-
-namespace CoreHelper
+namespace SecretHelper
 {
-    public static class SecretHelper
-    {
-        #region aes
-
-        /// <summary>
-        /// Aes加密
-        /// CipherMode.ECB;PaddingMode.PKCS7;
-        /// 密钥长度必须32位
-        /// </summary>
-        /// <param name="source">源字符串</param>
-        /// <param name="key">aes密钥，长度必须32位</param>
-        /// <returns>加密后的字符串</returns>
-        public static string AesEncrypt(string source, string key)
-        {
-            using (AesCryptoServiceProvider aesProvider = new AesCryptoServiceProvider())
-            {
-                aesProvider.Key = key.ToByte();
-                aesProvider.Mode = CipherMode.ECB;
-                aesProvider.Padding = PaddingMode.PKCS7;//随机扰动
-                using (ICryptoTransform cryptoTransform = aesProvider.CreateEncryptor())
-                {
-                    byte[] inputBuffers = Encoding.UTF8.GetBytes(source);
-                    byte[] results = cryptoTransform.TransformFinalBlock(inputBuffers, 0, inputBuffers.Length);
-                    aesProvider.Clear();
-                    aesProvider.Dispose();
-                    return System.Convert.ToBase64String(results, 0, results.Length);
-                }
-            }
-        }
-
-        public static string ToAesEncrypt(this string source, string key)
-        {
-            return AesEncrypt(source, key);
-        }
-
-        /// <summary>
-        /// Aes解密
-        /// 密钥长度必须32位
-        /// </summary>
-        /// <param name="source">源字符串</param>
-        /// <param name="key">aes密钥，长度必须32位</param>
-        /// <returns>解密后的字符串</returns>
-        public static string AesDecrypt(string source, string key)
-        {
-            using (AesCryptoServiceProvider aesProvider = new AesCryptoServiceProvider())
-            {
-                aesProvider.Key = key.ToByte();
-                aesProvider.Mode = CipherMode.ECB;
-                aesProvider.Padding = PaddingMode.PKCS7;
-                using (ICryptoTransform cryptoTransform = aesProvider.CreateDecryptor())
-                {
-                    byte[] inputBuffers = System.Convert.FromBase64String(source);
-                    byte[] results = cryptoTransform.TransformFinalBlock(inputBuffers, 0, inputBuffers.Length);
-                    aesProvider.Clear();
-                    return Encoding.UTF8.GetString(results);
-                }
-            }
-        }
-
-        public static string ToAesDecrypt(this string source, string key)
-        {
-            return AesDecrypt(source, key);
-        }
-
-        #endregion
-
-        #region MD5
-
-        public static string Md5(string str)
-        {
-            MD5 m = new MD5CryptoServiceProvider();
-            byte[] s = m.ComputeHash(Encoding.UTF8.GetBytes(str));
-            return BitConverter.ToString(s).Replace("-", "").ToUpper();
-        }
-
-        public static string ToMd5(this string str)
-        {
-            return Md5(str);
-        }
-
-        #endregion
-    }
-
-    public class RsaHelper
+    public class Rsa
     {
         private readonly RSA _privateKeyRsaProvider;
         private readonly RSA _publicKeyRsaProvider;
@@ -104,7 +20,7 @@ namespace CoreHelper
         /// <param name="encoding">编码类型</param>
         /// <param name="privateKey">私钥</param>
         /// <param name="publicKey">公钥</param>
-        public RsaHelper(RsaType rsaType, Encoding encoding, string privateKey, string publicKey = null)
+        public Rsa(RsaType rsaType, Encoding encoding, string privateKey, string publicKey = null)
         {
             _encoding = encoding;
             if (!string.IsNullOrEmpty(privateKey))
@@ -117,10 +33,8 @@ namespace CoreHelper
                 _publicKeyRsaProvider = CreateRsaProviderFromPublicKey(publicKey);
             }
 
-            _hashAlgorithmName = rsaType == RsaType.RSA ? HashAlgorithmName.SHA1 : HashAlgorithmName.SHA256;
+            _hashAlgorithmName = rsaType == RsaType.Rsa ? HashAlgorithmName.SHA1 : HashAlgorithmName.SHA256;
         }
-
-        #region 使用私钥签名
 
         /// <summary>
         /// 使用私钥签名
@@ -135,10 +49,6 @@ namespace CoreHelper
 
             return Convert.ToBase64String(signatureBytes);
         }
-
-        #endregion
-
-        #region 使用公钥验证签名
 
         /// <summary>
         /// 使用公钥验证签名
@@ -156,23 +66,11 @@ namespace CoreHelper
             return verify;
         }
 
-        #endregion
-
-        #region 解密
-
-        public string Decrypt(string cipherText)
-        {
-            if (_privateKeyRsaProvider == null)
-            {
-                throw new Exception("_privateKeyRsaProvider is null");
-            }
-            return Encoding.UTF8.GetString(_privateKeyRsaProvider.Decrypt(Convert.FromBase64String(cipherText), RSAEncryptionPadding.Pkcs1));
-        }
-
-        #endregion
-
-        #region 加密
-
+        /// <summary>
+        /// 公钥加密
+        /// </summary>
+        /// <param name="text"></param>
+        /// <returns></returns>
         public string Encrypt(string text)
         {
             if (_publicKeyRsaProvider == null)
@@ -182,9 +80,19 @@ namespace CoreHelper
             return Convert.ToBase64String(_publicKeyRsaProvider.Encrypt(Encoding.UTF8.GetBytes(text), RSAEncryptionPadding.Pkcs1));
         }
 
-        #endregion
-
-        #region 使用私钥创建RSA实例
+        /// <summary>
+        /// 私钥验密
+        /// </summary>
+        /// <param name="cipherText"></param>
+        /// <returns></returns>
+        public string Decrypt(string cipherText)
+        {
+            if (_privateKeyRsaProvider == null)
+            {
+                throw new Exception("_privateKeyRsaProvider is null");
+            }
+            return Encoding.UTF8.GetString(_privateKeyRsaProvider.Decrypt(Convert.FromBase64String(cipherText), RSAEncryptionPadding.Pkcs1));
+        }
 
         public RSA CreateRsaProviderFromPrivateKey(string privateKey)
         {
@@ -226,10 +134,6 @@ namespace CoreHelper
             rsa.ImportParameters(rsaParameters);
             return rsa;
         }
-
-        #endregion
-
-        #region 使用公钥创建RSA实例
 
         public RSA CreateRsaProviderFromPublicKey(string publicKeyString)
         {
@@ -324,10 +228,6 @@ namespace CoreHelper
             }
         }
 
-        #endregion
-
-        #region 导入密钥算法
-
         private int GetIntegerSize(BinaryReader binr)
         {
             byte bt = 0;
@@ -374,22 +274,18 @@ namespace CoreHelper
             return true;
         }
 
-        #endregion
     }
 
-    /// <summary>
-    /// RSA算法类型
-    /// </summary>
     public enum RsaType
     {
         /// <summary>
         /// SHA1
         /// </summary>
-        RSA = 0,
+        Rsa = 0,
         /// <summary>
         /// RSA2 密钥长度至少为2048
         /// SHA256
         /// </summary>
-        RSA2
+        Rsa2
     }
 }

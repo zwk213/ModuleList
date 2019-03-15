@@ -1,9 +1,9 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
-namespace CoreHelper
+namespace JsonHelper
 {
-    public class JsonHelper
+    public static class Json
     {
         /// <summary>
         /// 默认序列化参数
@@ -31,7 +31,7 @@ namespace CoreHelper
             return JsonConvert.DeserializeObject<T>(input);
         }
 
-        public T Deserialize<T>(string input, JsonSerializerSettings settings)
+        public static T Deserialize<T>(string input, JsonSerializerSettings settings)
         {
             return JsonConvert.DeserializeObject<T>(input, settings);
         }

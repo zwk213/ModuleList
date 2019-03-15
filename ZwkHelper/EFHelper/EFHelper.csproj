@@ -2,8 +2,9 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
-    <Version>1.1.1</Version>
-    <Description>添加缓存</Description>
+    <Version>1.1.7</Version>
+    <Description>调整缓存引用方式
+</Description>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -11,13 +12,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="CacheHelper" Version="1.0.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.1.3" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="2.1.3" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\CoreHelper\CoreHelper.csproj" />
-    <ProjectReference Include="..\RedisHelper\CacheHelper.csproj" />
   </ItemGroup>
 
 </Project>

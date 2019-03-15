@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 using CacheHelper.Achieve;
 using CacheHelper.Enum;
 using CacheHelper.Interface;
-using CoreHelper;
 using EFHelper.Helper;
 using EFHelper.Interface;
 using EFHelper.Interface.Item;
 using EFHelper.Model;
+using JsonHelper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 
@@ -19,13 +19,14 @@ namespace EFHelper.Achieve
 {
     public class CacheDataLayer<T> : ICacheDataLayer<T> where T : BaseModel
     {
-        protected DbContext DbContext { get; set; }
+        public DbContext DbContext { get; set; }
 
-        private readonly ICacheService _cacheService;
+        public ICacheService CacheService { get; set; }
 
-        public CacheDataLayer(ICacheService service)
+        public CacheDataLayer(ICacheService service, DbContext dbContext)
         {
-            _cacheService = service;
+            CacheService = service;
+            DbContext = dbContext;
         }
 
         #region 增加
@@ -34,7 +35,7 @@ namespace EFHelper.Achieve
         {
             DbContext.Set<T>().Add(model);
             Commit();
-            _cacheService.Add(model.PrimaryKey, JsonHelper.Serialize(model), CacheExpired.Day);
+            CacheService.Add(model.PrimaryKey, Json.Serialize(model), CacheExpired.Day);
             return model;
         }
 
@@ -42,7 +43,7 @@ namespace EFHelper.Achieve
         {
             await DbContext.Set<T>().AddAsync(model);
             await CommitAsync();
-            _cacheService.Add(model.PrimaryKey, JsonHelper.Serialize(model), CacheExpired.Day);
+            CacheService.Add(model.PrimaryKey, Json.Serialize(model), CacheExpired.Day);
             return model;
         }
 
@@ -52,7 +53,7 @@ namespace EFHelper.Achieve
             Commit();
             foreach (var model in models)
             {
-                _cacheService.Add(model.PrimaryKey, JsonHelper.Serialize(model), CacheExpired.Day);
+                CacheService.Add(model.PrimaryKey, Json.Serialize(model), CacheExpired.Day);
             }
         }
 
@@ -62,7 +63,7 @@ namespace EFHelper.Achieve
             await CommitAsync();
             foreach (var model in models)
             {
-                await _cacheService.AddAsync(model.PrimaryKey, JsonHelper.Serialize(model), CacheExpired.Day);
+                await CacheService.AddAsync(model.PrimaryKey, Json.Serialize(model), CacheExpired.Day);
             }
         }
 
@@ -74,7 +75,7 @@ namespace EFHelper.Achieve
         {
             EntityEntry temp = DbContext.Entry(model);
             //缓存删除
-            _cacheService.Remove(model.PrimaryKey);
+            CacheService.Remove(model.PrimaryKey);
             //数据库删除
             temp.State = EntityState.Deleted;
             Commit();
@@ -84,7 +85,7 @@ namespace EFHelper.Achieve
         {
             EntityEntry temp = DbContext.Entry(model);
             //缓存删除
-            await _cacheService.RemoveAsync(model.PrimaryKey);
+            await CacheService.RemoveAsync(model.PrimaryKey);
             //数据库删除
             temp.State = EntityState.Deleted;
             await CommitAsync();
@@ -96,7 +97,7 @@ namespace EFHelper.Achieve
             //缓存删除
             foreach (var t in temp)
             {
-                _cacheService.Remove(t.PrimaryKey);
+                CacheService.Remove(t.PrimaryKey);
             }
             //数据库删除
             DbContext.RemoveRange(temp);
@@ -109,7 +110,7 @@ namespace EFHelper.Achieve
             //缓存删除
             foreach (var t in temp)
             {
-                await _cacheService.RemoveAsync(t.PrimaryKey);
+                await CacheService.RemoveAsync(t.PrimaryKey);
             }
             //数据库删除
             DbContext.RemoveRange(temp);
@@ -124,7 +125,7 @@ namespace EFHelper.Achieve
         {
             EntityEntry temp = DbContext.Entry(model);
             //缓存删除
-            _cacheService.Remove(model.PrimaryKey);
+            CacheService.Remove(model.PrimaryKey);
             //数据库更新
             temp.State = EntityState.Modified;
             Commit();
@@ -134,7 +135,7 @@ namespace EFHelper.Achieve
         {
             EntityEntry temp = DbContext.Entry(model);
             //缓存删除
-            await _cacheService.RemoveAsync(model.PrimaryKey);
+            await CacheService.RemoveAsync(model.PrimaryKey);
             //数据库更新
             temp.State = EntityState.Modified;
             await CommitAsync();
@@ -166,7 +167,7 @@ namespace EFHelper.Achieve
 
         public bool Exist(string key)
         {
-            var flag = _cacheService.Get(key);
+            var flag = CacheService.Get(key);
             if (flag != null)
                 return true;
             return Exist(p => p.PrimaryKey == key);
@@ -174,7 +175,7 @@ namespace EFHelper.Achieve
 
         public async Task<bool> ExistAsync(string key)
         {
-            var flag = await _cacheService.GetAsync(key);
+            var flag = await CacheService.GetAsync(key);
             if (flag != null)
                 return true;
             return await ExistAsync(p => p.PrimaryKey == key);
@@ -235,7 +236,7 @@ namespace EFHelper.Achieve
         /// <returns></returns>
         public T Select(string key)
         {
-            var result = _cacheService.Get<T>(key);
+            var result = CacheService.Get<T>(key);
             if (result != null)
                 return result;
             return Select(p => p.PrimaryKey == key);
@@ -248,7 +249,7 @@ namespace EFHelper.Achieve
         /// <returns></returns>
         public async Task<T> SelectAsync(string key)
         {
-            var result = await _cacheService.GetAsync<T>(key);
+            var result = await CacheService.GetAsync<T>(key);
             if (result != null)
                 return result;
             return await SelectAsync(p => p.PrimaryKey == key);
@@ -258,7 +259,7 @@ namespace EFHelper.Achieve
         {
             var result = Filter(where, properties).AsNoTracking().FirstOrDefault();
             if (result != null)
-                _cacheService.Add(result.PrimaryKey, result, CacheExpired.Day);
+                CacheService.Add(result.PrimaryKey, result, CacheExpired.Day);
             return result;
         }
 
@@ -283,7 +284,7 @@ namespace EFHelper.Achieve
             notInCache = new List<string>();
             foreach (var key in keys)
             {
-                var temp = _cacheService.Get<T>(key);
+                var temp = CacheService.Get<T>(key);
                 if (temp != null)
                     result.Add(temp);
                 else

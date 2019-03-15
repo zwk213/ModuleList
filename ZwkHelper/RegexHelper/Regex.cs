@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace CoreHelper
+namespace RegexHelper
 {
-    public static class RegexHelper
+    public static class Regex
     {
         /// <summary>
         /// 匹配 
@@ -15,9 +15,9 @@ namespace CoreHelper
         /// <param name="regText">正则表达式</param>
         /// <param name="errorMsg"></param>
         /// <returns></returns>
-        public static string RegexMatch(this string value, string regText, string errorMsg)
+        public static string Match(this string value, string regText, string errorMsg)
         {
-            Regex reg = new Regex(regText);
+            System.Text.RegularExpressions.Regex reg = new System.Text.RegularExpressions.Regex(regText);
             if (reg.IsMatch(value))
                 return value;
             throw new Exception(errorMsg);
@@ -30,9 +30,9 @@ namespace CoreHelper
         /// <param name="value"></param>
         /// <param name="regText">分隔符</param>
         /// <returns></returns>
-        public static string[] RegexSplit(this string value, string regText)
+        public static string[] Split(this string value, string regText)
         {
-            string[] arr = Regex.Split(value, regText);
+            string[] arr = System.Text.RegularExpressions.Regex.Split(value, regText);
             return arr;
         }
 
@@ -44,9 +44,9 @@ namespace CoreHelper
         /// <param name="regText">正则表达式</param>
         /// <param name="aimText">替换后的字符串</param>
         /// <returns></returns>
-        public static string RegexReplace(this string value, string regText, string aimText)
+        public static string Replace(this string value, string regText, string aimText)
         {
-            return Regex.Replace(value, regText, aimText);
+            return System.Text.RegularExpressions.Regex.Replace(value, regText, aimText);
         }
 
         /// <summary>
@@ -56,11 +56,11 @@ namespace CoreHelper
         /// <param name="value"></param>
         /// <param name="regText"></param>
         /// <returns></returns>
-        public static string[] RegexGet(this string value, string regText)
+        public static string[] Get(this string value, string regText)
         {
-            string[] strReturn = new string[Regex.Matches(value, regText).Count];
+            string[] strReturn = new string[System.Text.RegularExpressions.Regex.Matches(value, regText).Count];
             int i = 0;
-            foreach (Match mch in Regex.Matches(value, regText))
+            foreach (Match mch in System.Text.RegularExpressions.Regex.Matches(value, regText))
             {
                 strReturn[i] += mch.Value.Trim();
                 i++;
@@ -68,5 +68,4 @@ namespace CoreHelper
             return strReturn;
         }
     }
-
 }

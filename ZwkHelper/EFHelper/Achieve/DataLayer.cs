@@ -13,7 +13,7 @@ namespace EFHelper.Achieve
 {
     public class DataLayer<T> : IDataLayer<T> where T : BaseModel
     {
-        protected DbContext DbContext { get; set; }
+        public DbContext DbContext { get; set; }
 
         public DataLayer(DbContext dbContext)
         {
@@ -106,7 +106,7 @@ namespace EFHelper.Achieve
         {
             return DbContext.Set<T>().Count(where);
         }
-         
+
         public async Task<int> CountAsync(Expression<Func<T, bool>> where)
         {
             return await DbContext.Set<T>().CountAsync(where);

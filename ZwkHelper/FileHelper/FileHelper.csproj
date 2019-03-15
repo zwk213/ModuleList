@@ -9,8 +9,4 @@
     <PackageReference Include="SharpZipLib.NETStandard" Version="1.0.7" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\CoreHelper\CoreHelper.csproj" />
-  </ItemGroup>
-
 </Project>

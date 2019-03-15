@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.IO;
 using System.Text;
-using Newtonsoft.Json;
 
-namespace CoreHelper
+namespace ConvertHelper
 {
     public static class ConvertHelper
     {
@@ -232,18 +229,6 @@ namespace CoreHelper
         }
 
         /// <summary>
-        /// 将空字符串转化为null
-        /// </summary>
-        /// <param name="value"></param>
-        /// <returns></returns>
-        public static string ToNull(this string value)
-        {
-            if (string.IsNullOrEmpty(value))
-                return null;
-            return value;
-        }
-
-        /// <summary>
         /// 转化为指定字符串
         /// </summary>
         /// <param name="value"></param>
@@ -287,7 +272,11 @@ namespace CoreHelper
 
         public static string GetString(this Stream stream)
         {
-            return new StreamReader(stream).ReadToEnd();
+            var reader = new StreamReader(stream);
+            var result = reader.ReadToEnd();
+            reader.Dispose();
+            stream.Dispose();
+            return result;
         }
 
         public static Stream ToStream(this string str)
@@ -296,6 +285,8 @@ namespace CoreHelper
             StreamWriter writer = new StreamWriter(stream);
             writer.Write(str);
             writer.Flush();
+            writer.Dispose();
+            stream.Dispose();
             return stream;
         }
 

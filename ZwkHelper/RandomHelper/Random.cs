@@ -1,15 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace CoreHelper
+namespace RandomHelper
 {
-    public static class RandomHelper
+    public static class Random
     {
         /// <summary>
         /// 随机数
         /// </summary>
-        private static readonly Random Random = new Random();
+        private static readonly System.Random MyRandom = new System.Random();
 
         /// <summary>
         /// 获得随机数字
@@ -20,7 +18,7 @@ namespace CoreHelper
         {
             int min = (int)Math.Pow(10, 4);
             int max = (int)Math.Pow(10, length + 1) - 1;
-            return Random.Next(min, max);
+            return MyRandom.Next(min, max);
         }
 
         /// <summary>
@@ -31,7 +29,7 @@ namespace CoreHelper
         /// <returns></returns>
         public static int GetNumber(int min, int max)
         {
-            return Random.Next(min, max);
+            return MyRandom.Next(min, max);
         }
 
         /// <summary>
@@ -45,7 +43,7 @@ namespace CoreHelper
             string result = "";
             for (int i = 0; i < length; i++)
             {
-                result += letterNumber[Random.Next(0, letterNumber.Length)];
+                result += letterNumber[MyRandom.Next(0, letterNumber.Length)];
             }
             return result;
         }
@@ -62,7 +60,7 @@ namespace CoreHelper
             string result = "";
             for (int i = 0; i < length; i++)
             {
-                result += letterNumber[Random.Next(0, letterNumber.Length)];
+                result += letterNumber[MyRandom.Next(0, letterNumber.Length)];
             }
             return result;
         }

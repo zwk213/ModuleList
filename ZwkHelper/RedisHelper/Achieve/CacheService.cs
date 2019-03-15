@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using CacheHelper.Enum;
 using CacheHelper.Interface;
-using CoreHelper;
+using JsonHelper;
 using Microsoft.Extensions.Caching.Distributed;
 
 namespace CacheHelper.Achieve
@@ -23,7 +23,8 @@ namespace CacheHelper.Achieve
 
         public T Get<T>(string key) where T : class
         {
-            return JsonHelper.Deserialize<T>(_cache.GetString(key));
+
+            return Json.Deserialize<T>(_cache.GetString(key));
         }
 
         public bool Exists(string key)
@@ -35,7 +36,7 @@ namespace CacheHelper.Achieve
         {
             if (Exists(key))
                 return;
-            _cache.SetString(key, JsonHelper.Serialize(value), new DistributedCacheEntryOptions { SlidingExpiration = expired.ToTimeSpan() });
+            _cache.SetString(key, Json.Serialize(value), new DistributedCacheEntryOptions { SlidingExpiration = expired.ToTimeSpan() });
         }
 
         public void Remove(string key)
