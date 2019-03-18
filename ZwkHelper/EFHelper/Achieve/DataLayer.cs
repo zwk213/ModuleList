@@ -173,7 +173,7 @@ namespace EFHelper.Achieve
 
         #region 获取部分列
 
-        public List<TR> GetColumns<TR>(Expression<Func<T, bool>> where, Expression<Func<T, TR>> select, string orderby, int page, int size)
+        public List<TR> SelectColumns<TR>(Expression<Func<T, bool>> where, Expression<Func<T, TR>> select, string orderby, int page, int size)
         {
             return DbContext.Set<T>()
                 .Where(where)
@@ -184,9 +184,9 @@ namespace EFHelper.Achieve
                 .ToList();
         }
 
-        public async Task<List<TR>> GetColumnsAsync<TR>(Expression<Func<T, bool>> where, Expression<Func<T, TR>> select, string orderby, int page, int size)
+        public async Task<List<TR>> SelectColumnsAsync<TR>(Expression<Func<T, bool>> where, Expression<Func<T, TR>> select, string orderby, int page, int size)
         {
-            return await Task.Run(() => GetColumns(where, select, orderby, page, size));
+            return await Task.Run(() => SelectColumns(where, select, orderby, page, size));
         }
 
         #endregion

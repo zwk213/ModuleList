@@ -38,9 +38,9 @@ namespace EFHelper.Interface.Item
 
         #region 获取指定列
 
-        List<TR> GetColumns<TR>(Expression<Func<T, bool>> where, Expression<Func<T, TR>> select, string orderby, int page, int size);
+        List<TR> SelectColumns<TR>(Expression<Func<T, bool>> where, Expression<Func<T, TR>> select, string orderby, int page, int size);
 
-        Task<List<TR>> GetColumnsAsync<TR>(Expression<Func<T, bool>> where, Expression<Func<T, TR>> select, string orderby, int page, int size);
+        Task<List<TR>> SelectColumnsAsync<TR>(Expression<Func<T, bool>> where, Expression<Func<T, TR>> select, string orderby, int page, int size);
 
         #endregion
 

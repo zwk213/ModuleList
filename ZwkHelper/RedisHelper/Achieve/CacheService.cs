@@ -16,25 +16,22 @@ namespace CacheHelper.Achieve
             _cache = cache;
         }
 
-        public object Get(string key)
+        public string Get(string key)
         {
-            return _cache.Get(key);
+            return _cache.GetString(key);
         }
 
         public T Get<T>(string key) where T : class
         {
-
-            return Json.Deserialize<T>(_cache.GetString(key));
-        }
-
-        public bool Exists(string key)
-        {
-            return !string.IsNullOrEmpty(_cache.GetString(key));
+            var temp = _cache.GetString(key);
+            if (string.IsNullOrEmpty(temp))
+                return null;
+            return Json.Deserialize<T>(temp);
         }
 
         public void Add(string key, object value, CacheExpired expired)
         {
-            if (Exists(key))
+            if (!string.IsNullOrEmpty(Get(key)))
                 return;
             _cache.SetString(key, Json.Serialize(value), new DistributedCacheEntryOptions { SlidingExpiration = expired.ToTimeSpan() });
         }
@@ -60,11 +57,6 @@ namespace CacheHelper.Achieve
         public async Task<T> GetAsync<T>(string key) where T : class
         {
             return await Task.Run(() => Get<T>(key));
-        }
-
-        public async Task<bool> ExistsAsync(string key)
-        {
-            return await Task.Run(() => Exists(key));
         }
 
         public async Task AddAsync(string key, object value, CacheExpired expired)

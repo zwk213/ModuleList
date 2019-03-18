@@ -298,7 +298,10 @@ namespace EFHelper.Achieve
         {
             var keys = SelectKeys(where, orderby, 1, size);
             var result = SelectAny(keys, out var not);
-            result.AddRange(Filter(p => not.Contains(p.PrimaryKey), properties).ToList());
+            var temp = Filter(p => not.Contains(p.PrimaryKey), properties).ToList();
+            //添加到缓存
+            temp.ForEach(p => CacheService.Add(p.PrimaryKey, p, CacheExpired.Day));
+            result.AddRange(temp);
             return result;
         }
 
@@ -316,8 +319,10 @@ namespace EFHelper.Achieve
         {
             var keys = SelectKeys(where, orderby, page, size);
             var data = SelectAny(keys, out var not);
-            data.AddRange(Filter(p => not.Contains(p.PrimaryKey), properties).ToList());
-
+            var temp = Filter(p => not.Contains(p.PrimaryKey), properties).ToList();
+            //添加到缓存
+            temp.ForEach(p => CacheService.Add(p.PrimaryKey, p, CacheExpired.Day));
+            data.AddRange(temp);
             PageData<T> result = new PageData<T>()
             {
                 Page = page,
@@ -325,7 +330,6 @@ namespace EFHelper.Achieve
                 Count = Count(where),
                 Data = data,
             };
-
             return result;
         }
 
@@ -339,7 +343,7 @@ namespace EFHelper.Achieve
 
         #region 获取部分列
 
-        public List<TR> GetColumns<TR>(Expression<Func<T, bool>> where, Expression<Func<T, TR>> select, string orderby, int page, int size)
+        public List<TR> SelectColumns<TR>(Expression<Func<T, bool>> where, Expression<Func<T, TR>> select, string orderby, int page, int size)
         {
             return DbContext.Set<T>()
                 .Where(where)
@@ -350,9 +354,9 @@ namespace EFHelper.Achieve
                 .ToList();
         }
 
-        public async Task<List<TR>> GetColumnsAsync<TR>(Expression<Func<T, bool>> where, Expression<Func<T, TR>> select, string orderby, int page, int size)
+        public async Task<List<TR>> SelectColumnsAsync<TR>(Expression<Func<T, bool>> where, Expression<Func<T, TR>> select, string orderby, int page, int size)
         {
-            return await Task.Run(() => GetColumns(where, select, orderby, page, size));
+            return await Task.Run(() => SelectColumns(where, select, orderby, page, size));
         }
 
         #endregion
