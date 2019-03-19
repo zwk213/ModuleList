@@ -2,8 +2,10 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
-    <Version>1.1.12</Version>
-    <Description>调整缓存引用方式
+    <Version>1.2.2</Version>
+    <Description>添加验证
+对原始模型类扩展方法
+缓存重排序
 </Description>
   </PropertyGroup>
 
@@ -15,6 +17,7 @@
     <PackageReference Include="CacheHelper" Version="1.0.4" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.1.3" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="2.1.3" />
+    <PackageReference Include="ValidateHelper" Version="1.0.1" />
   </ItemGroup>
 
 </Project>

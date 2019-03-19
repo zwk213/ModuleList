@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using ValidateHelper;
 
 namespace EFHelper.Model
 {
@@ -45,6 +46,19 @@ namespace EFHelper.Model
         {
             UpdateBy = updateBy;
             UpdateDate = DateTime.Now;
+        }
+
+        public virtual void Validate()
+        {
+            PrimaryKey.HasValue("主键必填").MaxLength(50, "主键最大长度50");
+            CreateBy.HasValue("创建人必填").MaxLength(50, "创建人最大长度50");
+            UpdateBy.HasValue("更新人必填").MaxLength(50, "更新人最大长度50");
+        }
+
+        public virtual void UpdateFrom(BaseModel model)
+        {
+            UpdateBy = model.UpdateBy;
+            UpdateDate = model.UpdateDate;
         }
 
     }

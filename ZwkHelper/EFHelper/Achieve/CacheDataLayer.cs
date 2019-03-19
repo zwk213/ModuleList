@@ -35,7 +35,7 @@ namespace EFHelper.Achieve
         {
             DbContext.Set<T>().Add(model);
             Commit();
-            CacheService.Add(model.PrimaryKey, Json.Serialize(model), CacheExpired.Day);
+            CacheService.Add(model.PrimaryKey, model, CacheExpired.Day);
             return model;
         }
 
@@ -43,7 +43,7 @@ namespace EFHelper.Achieve
         {
             await DbContext.Set<T>().AddAsync(model);
             await CommitAsync();
-            CacheService.Add(model.PrimaryKey, Json.Serialize(model), CacheExpired.Day);
+            CacheService.Add(model.PrimaryKey, model, CacheExpired.Day);
             return model;
         }
 
@@ -53,7 +53,7 @@ namespace EFHelper.Achieve
             Commit();
             foreach (var model in models)
             {
-                CacheService.Add(model.PrimaryKey, Json.Serialize(model), CacheExpired.Day);
+                CacheService.Add(model.PrimaryKey, model, CacheExpired.Day);
             }
         }
 
@@ -297,11 +297,15 @@ namespace EFHelper.Achieve
             params Expression<Func<T, object>>[] properties)
         {
             var keys = SelectKeys(where, orderby, 1, size);
-            var result = SelectAny(keys, out var not);
-            var temp = Filter(p => not.Contains(p.PrimaryKey), properties).ToList();
+            var inCache = SelectAny(keys, out var not);
+            var notInCache = Filter(p => not.Contains(p.PrimaryKey), properties).ToList();
             //添加到缓存
-            temp.ForEach(p => CacheService.Add(p.PrimaryKey, p, CacheExpired.Day));
-            result.AddRange(temp);
+            notInCache.ForEach(p => CacheService.Add(p.PrimaryKey, p, CacheExpired.Day));
+            inCache.AddRange(notInCache);
+            //重排序
+            var result = (from p in keys
+                          join q in inCache on p equals q.PrimaryKey
+                          select q).ToList();
             return result;
         }
 
@@ -318,11 +322,15 @@ namespace EFHelper.Achieve
         public PageData<T> SelectPage(Expression<Func<T, bool>> where, string orderby, int page, int size, params Expression<Func<T, object>>[] properties)
         {
             var keys = SelectKeys(where, orderby, page, size);
-            var data = SelectAny(keys, out var not);
-            var temp = Filter(p => not.Contains(p.PrimaryKey), properties).ToList();
+            var inCache = SelectAny(keys, out var not);
+            var notInCache = Filter(p => not.Contains(p.PrimaryKey), properties).ToList();
             //添加到缓存
-            temp.ForEach(p => CacheService.Add(p.PrimaryKey, p, CacheExpired.Day));
-            data.AddRange(temp);
+            notInCache.ForEach(p => CacheService.Add(p.PrimaryKey, p, CacheExpired.Day));
+            inCache.AddRange(notInCache);
+            //重排序
+            var data = (from p in keys
+                        join q in inCache on p equals q.PrimaryKey
+                select q).ToList();
             PageData<T> result = new PageData<T>()
             {
                 Page = page,
