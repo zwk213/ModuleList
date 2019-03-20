@@ -2,10 +2,11 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
-    <Version>1.2.2</Version>
+    <Version>1.2.3</Version>
     <Description>添加验证
 对原始模型类扩展方法
 缓存重排序
+添加选selectOption类供数据读取使用
 </Description>
   </PropertyGroup>
 
